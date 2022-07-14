@@ -1,0 +1,130 @@
+[tool.poetry]
+name = "app"
+version = "2.2.0a0"
+description = "Fastapi for coupon Management"
+authors = [
+
+]
+maintainers = [
+
+]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.73.0"
+uvicorn = "^0.17.1"
+pydantic = {version = "^1.8.2", extras = ["dotenv"]}
+yarl = "^1.6.3"
+SQLAlchemy = {version = "^1.4", extras = ["mypy", "asyncio"]}
+asyncpg = {version = "^0.25", extras = ["sa"]}
+aiofiles = "^0.8"
+httptools = "^0.3.0"
+async-exit-stack = "^1.0.1"
+async-generator = "^1.10"
+alembic = "^1.6.5"
+bcrypt = "^3.2.0"
+virtualenv = "^20.8.1"
+psycopg2-binary = "^2.9.1"
+fastapi-pagination = "^0.9.0"
+factory-boy = "^3.2.1"
+python-dotenv = "^0.19.1"
+ddtrace = "^0.46.0"
+boto3 = "^1.20.45"
+pytz = "^2021.3"
+opentelemetry-instrumentation-fastapi = "^0.28b0"
+opentelemetry-api = "^1.9.0"
+opentelemetry-sdk = "^1.9.0"
+opentelemetry-exporter-datadog = "^0.28b0"
+opentelemetry-instrumentation-asyncpg = "^0.28b0"
+opentelemetry-instrumentation-sqlalchemy = "^0.28b0"
+loguru = "^0.6.0"
+stackprinter = "^0.2.5"
+python-multipart = "^0.0.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0"
+flake8 = "^4.0"
+mypy = "^0.931"
+isort = "^5.10"
+yesqa = "^1.2.3"
+pre-commit = "^2.11.0"
+black = "^22.1.0"
+pytest-async-sqlalchemy = "^0.2.0"
+autoflake = "^1.4"
+pytest-alembic = "^0.7"
+pytest-cov = "^3.0.0"
+pytest-asyncio = "^0.17.2"
+httpx = "^0.22.0"
+aiosqlite = "0.17.0"
+greenlet = "1.1.2"
+pytest-deadfixtures = "^2.2.1"
+sqlalchemy2-stubs = "^0.0.2-alpha.19"
+safety = "^1.10.3"
+bandit = "^1.7.2"
+commitizen = "^2.20.2"
+freezegun = "^1.1.0"
+
+[tool.black]
+line-length = 79
+target-version = [ "py39" ]
+include = "\\.pyi?$"
+force-exclude = """
+(
+  /(
+      \\.eggs         # exclude a few common directories in the
+    | \\.git          # root of the project
+    | \\.hg
+    | \\.mypy_cache
+    | \\.tox
+    | \\.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | alembic
+  )
+)
+"""
+
+[tool.isort]
+line_length = 79
+multi_line_output = 3
+use_parentheses = true
+include_trailing_comma = true
+skip_glob = [ "**alembic**" ]
+filter_files = true
+
+[tool.coverage.run]
+branch = true
+omit = [
+  "**alembic**",
+  "**tests**",
+  "**settings**"
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+update_changelog_on_bump = true
+version = "2.2.0a0"
+version_files = [
+    "pyproject.toml:version",
+    "app/__init__.py"
+]
+style = [
+    ["qmark", "fg:#ff9d00 bold"],
+    ["question", "bold"],
+    ["answer", "fg:#ff9d00 bold"],
+    ["pointer", "fg:#ff9d00 bold"],
+    ["highlighted", "fg:#ff9d00 bold"],
+    ["selected", "fg:#cc5454"],
+    ["separator", "fg:#cc5454"],
+    ["instruction", ""],
+    ["text", ""],
+    ["disabled", "fg:#858585 italic"]
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

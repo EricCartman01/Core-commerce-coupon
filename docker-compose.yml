@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+  api:
+    container_name: "core_commerce_coupon_api"
+    build: .
+    ports:
+      - "${CORE_COMMERCE_COUPON_PORT}:${CORE_COMMERCE_COUPON_PORT}"
+    env_file: .env
+    volumes:
+      - .:/app/src
+    links:
+      - db
+
+  db:
+    image: postgres:13.4-buster
+    container_name: "${CORE_COMMERCE_COUPON_DB_HOST}"
+    hostname: "${CORE_COMMERCE_COUPON_DB_HOST}"
+    environment:
+      - POSTGRES_PASSWORD=${CORE_COMMERCE_COUPON_DB_PASS}
+      - POSTGRES_USER=${CORE_COMMERCE_COUPON_DB_USER}
+      - POSTGRES_DB=${CORE_COMMERCE_COUPON_DB_BASE}
+    ports:
+      - "5432:5432"

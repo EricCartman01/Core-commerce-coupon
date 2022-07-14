@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-commerce-coupon
+  namespace: core-commerce
+spec:
+  selector:
+    matchLabels:
+      app: core-commerce-coupon
+  template:
+    metadata:
+      labels:
+        app: core-commerce-coupon
+    spec:
+      containers:
+        - name: core-commerce-coupon-pg-proxy
+          image: 705921026741.dkr.ecr.sa-east-1.amazonaws.com/sre-postgres-pgpool:latest
+          imagePullPolicy: Always
+          env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key: user
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key: password
+          - name: DB_WRITER_HOST
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key:  endpoint_writter
+          - name: DB_WRITER_PORT
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key: port
+          - name: DB_READER_HOST
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key: endpoint_reader
+          - name: DB_READER_PORT
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key: port
+          ports:
+            - containerPort: 5432
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            periodSeconds: 15
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            periodSeconds: 30

@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: core-commerce-coupon
+  namespace: core-commerce
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/target-group-attributes: load_balancing.algorithm.type=least_outstanding_requests
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:sa-east-1:164740115373:certificate/82e88de5-b238-442b-89b4-f0d05196036d
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/subnets: 'subnet-094cb06e710e4a4ff, subnet-0e780cfd184caf5c1, subnet-0c44094800ac373bd'
+    alb.ingress.kubernetes.io/load-balancer-attributes: routing.http2.enabled=true
+    alb.ingress.kubernetes.io/proxy-read-timeout: "600"
+    alb.ingress.kubernetes.io/security-groups: "sg-00a504149da0b19a2, sg-081328ec197273f50"
+spec:
+  rules:
+    - host: core-commerce-coupon.faci.ly
+      http:
+        paths:
+          - backend:
+              serviceName: core-commerce-coupon
+              servicePort: 80
+  tls:
+    - hosts:
+        - core-commerce-coupon.faci.ly

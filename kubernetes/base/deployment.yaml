@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-commerce-coupon
+  namespace: core-commerce
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: core-commerce-coupon
+  template:
+    metadata:
+      labels:
+        app: core-commerce-coupon
+    spec:
+      containers:
+        - name: core-commerce-coupon
+          image: core-commerce-coupon
+          command: ["python", "-m", "app"]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 8000
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 8000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 2

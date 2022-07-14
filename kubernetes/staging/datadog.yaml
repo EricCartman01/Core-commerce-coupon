@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-commerce-coupon
+  namespace: core-commerce
+  labels:
+    tags.datadoghq.com/env: "staging"
+    tags.datadoghq.com/service: "core-commerce-coupon"
+    tags.datadoghq.com/version: GITHUB_VERSION
+spec:
+  template:
+    metadata:
+      labels:
+        tags.datadoghq.com/env: "staging"
+        tags.datadoghq.com/service: "core-commerce-coupon"
+        tags.datadoghq.com/version: GITHUB_VERSION
+    spec:
+      containers:
+        - name: core-commerce-coupon
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+        - name: core-commerce-coupon-pg-proxy
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']

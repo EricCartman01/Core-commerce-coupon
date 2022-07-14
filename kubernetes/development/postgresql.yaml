@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-commerce-coupon-db
+  namespace: core-commerce
+spec:
+  selector:
+    matchLabels:
+      app: core-commerce-coupon-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: core-commerce-coupon-db
+    spec:
+      containers:
+        - name: core-commerce-coupon-db
+          env:
+          - name: POSTGRES_DB
+            value: "core_commerce_coupon"
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql-core-commerce-coupon
+                key: password
+          - name: PGDATA
+            value: /var/lib/postgresql/data/pgdata
+          image: postgres:13.5
+          resources:
+            requests:
+              memory: 4Gi
+              cpu: 400m
+            limits:
+              memory: 8Gi
+              cpu: 8000m
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: core-commerce-coupon-db
+      volumes:
+        - name: core-commerce-coupon-db
+          persistentVolumeClaim:
+            claimName: core-commerce-coupon-db-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: core-commerce-coupon-db
+  namespace: core-commerce
+spec:
+  selector:
+    app: core-commerce-coupon-db
+  ports:
+    - port: 5432
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: core-commerce-coupon-db-pvc
+  namespace: core-commerce
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: "gp2"
+  resources:
+    requests:
+      storage: 10Gi

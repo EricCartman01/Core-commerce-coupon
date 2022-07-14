@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+patchesStrategicMerge:
+- replica_count.yaml
+- cpu_ram_count.yaml
+- envs.yaml
+- datadog.yaml
+
+resources:
+- ./../base
+- job.yaml
+- postgresql.yaml
+- ingress.yaml

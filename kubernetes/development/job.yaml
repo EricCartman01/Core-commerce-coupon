@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: core-commerce-coupon-GITHUB_RUN_ID
+  namespace: core-commerce
+spec:
+  template:
+    spec:
+      containers:
+      - name: core-commerce-coupon
+        image: core-commerce-coupon
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "4096Mi"
+            cpu: "2000m"
+        command: ['bash', '-c', "alembic upgrade head"]
+        env:
+        - name: CORE_COMMERCE_COUPON_RELOAD
+          value: 'True'
+        - name: CORE_COMMERCE_COUPON_PEPPER
+          value: 'qwert'
+        - name: CORE_COMMERCE_COUPON_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: core-commerce-coupon-auth
+              key: key
+        - name: CORE_COMMERCE_COUPON_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: core-commerce-coupon-api-key
+              key: key
+        - name: CORE_COMMERCE_COUPON_HOST
+          value: '0.0.0.0'
+        - name: CORE_COMMERCE_COUPON_PORT
+          value: '8000'
+        - name: CORE_COMMERCE_COUPON_WORKERS_COUNT
+          value: '1'
+        - name: CORE_COMMERCE_COUPON_DB_ECHO
+          value: 'False'
+        - name: CORE_COMMERCE_COUPON_BACKEND_CORS_ORIGINS
+          value: "[\"http://localhost\",\"http://localhost:8080\"]"
+        - name: CORE_COMMERCE_COUPON_DB_HOST
+          value: 'core-commerce-coupon-db'
+        - name: CORE_COMMERCE_COUPON_DB_BASE
+          value: 'core_commerce_coupon'
+        - name: CORE_COMMERCE_COUPON_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-postgresql-core-commerce-coupon
+              key: user
+        - name: CORE_COMMERCE_COUPON_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: db-postgresql-core-commerce-coupon
+              key: password
+        - name: CORE_COMMERCE_COUPON_DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: db-postgresql-core-commerce-coupon
+              key: port
+      restartPolicy: Never
+  backoffLimit: 3
